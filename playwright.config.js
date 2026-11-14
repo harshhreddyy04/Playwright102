@@ -3,7 +3,7 @@ const { defineConfig, devices } = require('@playwright/test');
 
 const LT_USERNAME = process.env.LT_USERNAME;
 const LT_ACCESS_KEY = process.env.LT_ACCESS_KEY;
-const BUILD_NAME = process.env.BUILD_NAME || 'Playwright102 - TestMu AI Selenium Playground';
+const BUILD_NAME = process.env.BUILD_NAME || 'Playwright102';
 const runOnCloud = Boolean(LT_USERNAME && LT_ACCESS_KEY);
 
 // Browser/OS combinations executed on the TestMu AI cloud.
@@ -20,13 +20,18 @@ function cloudOptions(projectName, { browserName, platform }) {
     'LT:Options': {
       platform,
       build: BUILD_NAME,
-      name: `Selenium Playground - ${projectName}`,
+      project: 'Playwright102',
+      name: `Playwright102 - ${projectName}`,
       user: LT_USERNAME,
       accessKey: LT_ACCESS_KEY,
       network: true,
       video: true,
       console: true,
       visual: true,
+      geoLocation: 'IN',
+      timezone: 'Kolkata',
+      accessibility: true,
+      'smartUI.project': 'Playwright102test',
     },
   };
   return {

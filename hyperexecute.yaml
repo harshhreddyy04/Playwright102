@@ -15,7 +15,7 @@ testSuites:
 
 # Injected environment variables (read by the tests / playwright.config.js).
 env:
-  BUILD_NAME: Playwright102 - HyperExecute
+  BUILD_NAME: Playwright102
   TEST_MESSAGE: Welcome to TestMu AI
   BASE_URL: https://www.testmuai.com/selenium-playground/
   # Secrets are created under HyperExecute > Secrets in the dashboard.
