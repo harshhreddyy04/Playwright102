@@ -4,3 +4,4 @@ playwright-report/
 .env
 hyperexecute
 hyperexecute.exe
+hyperexecute-cli.log
