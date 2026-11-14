@@ -4,14 +4,21 @@ const BASE_URL = process.env.BASE_URL || 'https://www.testmuai.com/selenium-play
 const MESSAGE = process.env.TEST_MESSAGE || 'Welcome to TestMu AI';
 const SUCCESS_TEXT = 'Thanks for contacting us, we will get back to you shortly.';
 
+// Scripts on the demo pages attach handlers after load; wait briefly so early clicks are not lost.
+// networkidle can stall on third-party scripts, so it is capped instead of required.
+async function settle(page) {
+  await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {});
+}
+
 test.beforeEach(async ({ page }) => {
-  await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+  await page.goto(BASE_URL, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+  await settle(page);
 });
 
-// Scripts on the demo pages attach handlers after load; wait so early clicks are not lost.
 async function openDemo(page, name) {
-  await page.getByRole('link', { name }).click();
-  await page.waitForLoadState('networkidle');
+  await page.getByRole('link', { name }).click({ timeout: 30_000 });
+  await page.waitForLoadState('domcontentloaded');
+  await settle(page);
 }
 
 // Reports pass/fail to the TestMu AI session so it is visible on the dashboard.

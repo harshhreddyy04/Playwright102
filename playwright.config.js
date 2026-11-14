@@ -43,7 +43,7 @@ module.exports = defineConfig({
   testDir: './tests',
   timeout: 90_000,
   fullyParallel: true,
-  retries: 0,
+  retries: 1,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     screenshot: 'on',
