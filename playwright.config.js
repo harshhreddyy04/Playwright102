@@ -4,12 +4,13 @@ const { defineConfig, devices } = require('@playwright/test');
 const LT_USERNAME = process.env.LT_USERNAME;
 const LT_ACCESS_KEY = process.env.LT_ACCESS_KEY;
 const BUILD_NAME = process.env.BUILD_NAME || 'Playwright102';
-const runOnCloud = Boolean(LT_USERNAME && LT_ACCESS_KEY);
+// Set USE_CDP=false to run local browsers instead of the TestMu AI cloud.
+const runOnCloud = Boolean(LT_USERNAME && LT_ACCESS_KEY) && process.env.USE_CDP !== 'false';
 
 // Browser/OS combinations executed on the TestMu AI cloud.
 const COMBINATIONS = {
-  'chrome-win10': { browserName: 'pw-chromium', platform: 'Windows 10', device: devices['Desktop Chrome'] },
-  'firefox-win11': { browserName: 'pw-firefox', platform: 'Windows 11', device: devices['Desktop Firefox'] },
+  chrome: { browserName: 'pw-chromium', platform: 'Windows 10', device: devices['Desktop Chrome'] },
+  firefox: { browserName: 'pw-firefox', platform: 'Windows 11', device: devices['Desktop Firefox'] },
 };
 
 /** Builds the TestMu AI CDP endpoint with network/video/console/screenshot capture enabled. */
@@ -28,10 +29,10 @@ function cloudOptions(projectName, { browserName, platform }) {
       video: true,
       console: true,
       visual: true,
-      geoLocation: 'IN',
-      timezone: 'Kolkata',
-      accessibility: true,
-      'smartUI.project': 'Playwright102test',
+      // The cloud rejects these optional capabilities (400) when the session is opened from a HyperExecute VM.
+      ...(process.env.MIN_CAPS === 'true'
+        ? {}
+        : { geoLocation: 'IN', timezone: 'Kolkata', accessibility: true, 'smartUI.project': 'Playwright102test' }),
     },
   };
   return {

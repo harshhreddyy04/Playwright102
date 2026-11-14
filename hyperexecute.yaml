@@ -3,12 +3,17 @@ globalTimeout: 90
 testSuiteTimeout: 90
 testSuiteStep: 90
 
-# The runner VM only drives the tests; the browser/OS under test is chosen in playwright.config.js.
-runson: linux
+# The tests run on both a Windows and a Linux HyperExecute VM in parallel; each opens a TestMu AI browser session.
+runson: ${matrix.os}
 
-# Each matrix value becomes a parallel job (Chrome on Windows 10, Firefox on Windows 11).
+# Playwright requires Node 20+; the default runner image ships Node 18.
+runtime:
+  language: node
+  version: "20"
+
 matrix:
-  project: ["chrome-win10", "firefox-win11"]
+  os: ["win", "linux"]
+  project: ["chrome"]
 
 testSuites:
   - npx playwright test --project=$project
@@ -18,9 +23,10 @@ env:
   BUILD_NAME: Playwright102
   TEST_MESSAGE: Welcome to TestMu AI
   BASE_URL: https://www.testmuai.com/selenium-playground/
-  # Secrets are created under HyperExecute > Secrets in the dashboard.
-  LT_USERNAME: ${{ .secrets.LT_USERNAME }}
-  LT_ACCESS_KEY: ${{ .secrets.LT_ACCESS_KEY }}
+  MIN_CAPS: "true"
+  # Re-enable once the vault secrets exist (HyperExecute > Secrets); until then the runner's built-in LT_* variables are used.
+  # LT_USERNAME: ${{ .secrets.LT_USERNAME }}
+  # LT_ACCESS_KEY: ${{ .secrets.LT_ACCESS_KEY }}
 
 # Dependency caching: node_modules is restored when package.json is unchanged.
 cacheKey: '{{ checksum "package.json" }}'
@@ -31,7 +37,7 @@ pre:
   - npm install
 
 post:
-  - echo "Finished project $project"
+  - echo Finished $project on $os
 
 # Artifacts Management: collected from every job and merged into one downloadable archive.
 mergeArtifacts: true
@@ -42,9 +48,3 @@ uploadArtefacts:
   - name: test-results
     path:
       - test-results/**
-
-report: true
-partialReport:
-  location: playwright-report
-  type: html
-  frameworkName: playwright

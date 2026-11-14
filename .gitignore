@@ -5,3 +5,6 @@ playwright-report/
 hyperexecute
 hyperexecute.exe
 hyperexecute-cli.log
+logs/
+.hyperexecute/
+.updatedhyperexecute.yaml
