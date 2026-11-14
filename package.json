@@ -1,0 +1,14 @@
+{
+  "name": "playwright102",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TestMu AI Selenium Playground tests run on HyperExecute",
+  "scripts": {
+    "test": "playwright test",
+    "test:chrome-win10": "playwright test --project=chrome-win10",
+    "test:firefox-win11": "playwright test --project=firefox-win11"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
